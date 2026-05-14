@@ -15,7 +15,21 @@
     fbq('init','778731385018899');
     fbq('init','1298885441635850');
     fbq('track','PageView');
-  </script>
+  
+
+  /* Image safety: if one uploaded image path fails on GitHub, replace it with the strongest demo image instead of showing a broken icon. */
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('img').forEach(function(img){
+      img.addEventListener('error',function(){
+        if(!this.dataset.fallbackApplied){
+          this.dataset.fallbackApplied='1';
+          this.src='images/5.webp';
+        }
+      });
+    });
+  });
+
+</script>
   <noscript>
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=778731385018899&ev=PageView&noscript=1"/>
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1298885441635850&ev=PageView&noscript=1"/>
@@ -50,6 +64,67 @@
 
     @media(max-width:920px){.hero-grid,.grid2{grid-template-columns:1fr}.gallery{position:static}.cards,.reviewgrid{grid-template-columns:1fr}.compare{grid-template-columns:1fr}.thumbs{display:flex;overflow-x:auto;padding-bottom:5px}.thumb{min-width:72px}.sticky{display:block}.hdrtrust{display:none}.section{padding:48px 0}.mainimg img{aspect-ratio:1/1}.photo img{max-height:none}.hero{padding-top:18px}}
     @media(max-width:560px){.wrap{padding:0 13px}.topbar{font-size:11.5px}.hdr{height:54px}.logo{font-size:17px}.logomark{width:30px;height:30px}.headercta{font-size:12px;padding:9px 12px}.title{font-size:31px}.subtitle{font-size:15.5px;line-height:1.75}.price{font-size:36px}.row2{grid-template-columns:1fr}.truststrip{grid-template-columns:1fr 1fr}.offer{grid-template-columns:auto 1fr}.oprice{grid-column:2;text-align:right;font-size:16px}.tagpop{right:34px}.formbody{padding:16px}.h2{font-size:26px}.lead{font-size:15px}.card,.review,.side{padding:16px}.thumb{min-width:64px}.btn{font-size:16px}.upsell-body h3{font-size:22px}}
+
+
+    /* MOBILE + IMAGE HOTFIX v3 */
+    html,body{width:100%;max-width:100%;overflow-x:hidden}
+    *{max-width:100%}
+    .wrap,.hero-grid,.grid2,.cards,.compare,.gallery,.info,.text,.photo,.mainimg,.bottomform{min-width:0}
+    .mainimg img{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;background:#fff}
+    .photo img{width:100%;height:auto;object-fit:contain;background:#fff}
+    .cards .photo{align-self:start}
+    .upsell-body img{width:100%;height:auto;max-height:220px;object-fit:contain;background:#fff;border-radius:14px;margin-bottom:12px}
+    @media(max-width:920px){
+      .hero-grid{display:flex;flex-direction:column;gap:18px}
+      .gallery{width:100%;position:static;top:auto}
+      .mainimg{border-radius:18px}
+      .thumbs{display:flex!important;overflow-x:auto;gap:8px;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
+      .thumb{min-width:70px!important;width:70px;flex:0 0 70px;scroll-snap-align:start}
+      .thumb img{width:100%;height:70px;object-fit:cover}
+      .cards,.cards[style],.reviewgrid,.compare{grid-template-columns:1fr!important}
+      .grid2{display:flex;flex-direction:column;gap:22px}
+      .section .grid2 .photo{order:1;width:100%}
+      .section .grid2 .text{order:2;width:100%}
+    }
+    @media(max-width:560px){
+      .wrap{padding-left:12px!important;padding-right:12px!important}
+      .topbar{line-height:1.35;padding:7px 8px}
+      .toprow{gap:6px}
+      .hero{padding:12px 0 30px}
+      .hdr{height:50px;gap:8px}
+      .logo{font-size:15.5px;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .logomark{width:28px;height:28px;border-radius:9px;flex:0 0 28px}
+      .headercta{font-size:11.5px;padding:8px 10px;white-space:nowrap}
+      .mainimg{box-shadow:0 8px 24px rgba(0,0,0,.08)}
+      .floatbadge{font-size:10.5px;top:9px;right:9px;padding:5px 9px}
+      .thumb{min-width:62px!important;width:62px;flex-basis:62px}
+      .thumb img{height:62px}
+      .title{font-size:27px!important;line-height:1.18;margin-bottom:9px;letter-spacing:0}
+      .subtitle{font-size:14.8px!important;line-height:1.72;margin-bottom:12px}
+      .pillrow{gap:6px;margin:9px 0 13px}
+      .pill{font-size:11px;padding:6px 9px}
+      .painbox,.pricebox,.offer,.note,.trustitem{border-radius:12px}
+      .offer{padding:10px 9px;gap:8px;width:100%}
+      .offers{gap:8px}
+      .price{font-size:34px!important;line-height:1.05}
+      .row2{grid-template-columns:1fr!important}
+      input,select{min-height:46px;font-size:16px!important}
+      .section{padding:38px 0!important}
+      .h2{font-size:23px!important;line-height:1.28}
+      .lead,.text p{font-size:14.5px!important;line-height:1.75}
+      .photo{border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+      .card,.review,.side{padding:15px 13px!important;border-radius:15px}
+      .cards{gap:12px;margin-top:18px}
+      .truststrip{grid-template-columns:1fr 1fr!important;gap:6px}
+      .bottomform{border-radius:18px;margin-top:20px;width:100%}
+      .formbody{padding:14px!important}
+      .sticky{font-size:13px;padding:12px 10px}
+      footer{padding-bottom:68px}
+    }
+    @media(max-width:380px){
+      .title{font-size:24px!important}.price{font-size:30px!important}.logo span{display:none}.truststrip{grid-template-columns:1fr!important}
+    }
+
   </style>
 </head>
 <body>
@@ -191,6 +266,20 @@
   (function(){let v=Math.floor(Math.random()*8)+12;const el=document.getElementById('viewers');if(el)el.textContent=v;setInterval(()=>{v=Math.max(8,v+(Math.random()<.55?1:-1));if(el)el.textContent=v},13000)})();
   ['p-phone','f-phone'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',function(){this.value=this.value.replace(/[^0-9+ ]/g,'')})});
   window.addEventListener('load',()=>setPkg(1));
+
+
+  /* Image safety: if one uploaded image path fails on GitHub, replace it with the strongest demo image instead of showing a broken icon. */
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('img').forEach(function(img){
+      img.addEventListener('error',function(){
+        if(!this.dataset.fallbackApplied){
+          this.dataset.fallbackApplied='1';
+          this.src='images/5.webp';
+        }
+      });
+    });
+  });
+
 </script>
 </body>
 </html>
