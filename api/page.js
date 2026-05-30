@@ -16,6 +16,9 @@ export default async function handler(req, res) {
 
     html = html.replace(originalPostOrder, telegramPostOrder);
 
+    // Keep the SKU fixed even when an upsell is accepted.
+    html = html.replace("pendingOrder.sku+='+UPSELL-1';", "pendingOrder.sku='AS41600';");
+
     // Upsell improvement only: copy, visual styling, and displayed/charged upsell price.
     // This does not touch pixels, Google Sheets, Telegram, or order submission wiring.
     html = html
