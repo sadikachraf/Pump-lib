@@ -26,6 +26,13 @@ export default async function handler(req, res) {
     // Keep the SKU fixed even when an upsell is accepted.
     html = html.replace("pendingOrder.sku+='+UPSELL-1';", "pendingOrder.sku='AS41600';");
 
+    // Make offer economics clearer without changing the design.
+    // Since multi-quantity delivery is weaker, copy keeps 1 piece as the safest choice and frames 2/3 pieces for real multi-location need only.
+    html = html
+      .replace('<h3>قطعة واحدة</h3><p>مناسبة للسيارة أو البيت</p>', '<h3>قطعة واحدة</h3><p>345 د.ل للقطعة — الاختيار الأسهل للتجربة</p>')
+      .replace('<h3>قطعتين</h3><p>وحدة للسيارة ووحدة للبيت/الورشة</p>', '<h3>قطعتين</h3><p>299.5 د.ل للقطعة — للسيارة + المولد</p>')
+      .replace('<h3>3 قطع</h3><p>اختيار عملي للورشة أو العائلة</p>', '<h3>3 قطع</h3><p>283 د.ل للقطعة — للورشة أو العائلة فقط</p>');
+
     // Upsell improvement only: copy, visual styling, and displayed/charged upsell price.
     // This does not touch pixels, Google Sheets, Telegram, or order submission wiring.
     html = html
