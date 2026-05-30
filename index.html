@@ -216,12 +216,12 @@
   <a href="#order-form" class="sticky" onclick="fireInitiateCheckout()">اطلب الآن — الدفع عند الاستلام</a>
 
 <script>
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxpACwTqXka10ga6UNC_skwnG1juwAdve9FSBUYLfZT1BoAckqLCIxbAEavEWxIdCM8ZA/exec';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfZDgIcM8TmzY9XgFE349EM4yMcE0U3TB70NpiXP_fF7RMUYxPxLIwKW_4Qg8m4XJc/exec';
   const UPSELL_PRICE = 254;
   const PKGS={
-    1:{sku:'PUMP-LY-1',name:'مضخة نقل السوائل',offer:'قطعة واحدة',price:345,old:420,save:75,quantity:1,unit:'345'},
-    2:{sku:'PUMP-LY-2',name:'مضختين نقل السوائل',offer:'عرض قطعتين',price:599,old:690,save:91,quantity:2,unit:'299.5'},
-    3:{sku:'PUMP-LY-3',name:'3 مضخات نقل السوائل',offer:'عرض 3 قطع',price:849,old:1035,save:186,quantity:3,unit:'283'}
+    1:{sku:'AS41600',name:'مضخة نقل السوائل',offer:'قطعة واحدة',price:345,old:420,save:75,quantity:1,unit:'345'},
+    2:{sku:'AS41600',name:'مضختين نقل السوائل',offer:'عرض قطعتين',price:599,old:690,save:91,quantity:2,unit:'299.5'},
+    3:{sku:'AS41600',name:'3 مضخات نقل السوائل',offer:'عرض 3 قطع',price:849,old:1035,save:186,quantity:3,unit:'283'}
   };
   let currentPkg=1,pendingOrder=null,pendingPrefix=null,orderSent=false;
 
