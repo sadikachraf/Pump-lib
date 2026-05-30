@@ -16,6 +16,9 @@ export default async function handler(req, res) {
 
     html = html.replace(originalPostOrder, telegramPostOrder);
 
+    // Fix sticky CTA: original href points to #order-form, but that ID does not exist.
+    html = html.replace(/href="#order-form"/g, 'href="#order"');
+
     // Keep the SKU fixed even when an upsell is accepted.
     html = html.replace("pendingOrder.sku+='+UPSELL-1';", "pendingOrder.sku='AS41600';");
 
