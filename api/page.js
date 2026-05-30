@@ -16,11 +16,12 @@ export default async function handler(req, res) {
 
     html = html.replace(originalPostOrder, telegramPostOrder);
 
-    // Fix sticky/header CTA: scroll directly to the checkout form on mobile instead of the top of the hero.
+    // Fix sticky/header CTA: scroll directly to the offers block, so package choices are centered on mobile.
     html = html
-      .replace(/href="#order-form"/g, 'href="#checkout-form"')
-      .replace(/href="#order"/g, 'href="#checkout-form"')
-      .replace('<div class="form"><div class="row2"><input id="p-name"', '<div class="form" id="checkout-form"><div class="row2"><input id="p-name"');
+      .replace(/href="#order-form"/g, 'href="#offers-block"')
+      .replace(/href="#order"/g, 'href="#offers-block"')
+      .replace(/href="#checkout-form"/g, 'href="#offers-block"')
+      .replace('<div class="label">اختار العرض:</div><div class="offers">', '<div class="label" id="offers-block">اختار العرض:</div><div class="offers">');
 
     // Keep the SKU fixed even when an upsell is accepted.
     html = html.replace("pendingOrder.sku+='+UPSELL-1';", "pendingOrder.sku='AS41600';");
@@ -51,7 +52,7 @@ export default async function handler(req, res) {
 
     const upsellStyle = `
 <style>
-  #checkout-form{scroll-margin-top:92px}
+  #offers-block{scroll-margin-top:150px}
   .upsell-overlay{align-items:flex-start!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;padding:10px 12px 22px!important}
   .upsell-card{max-height:none!important;margin:0 auto 18px!important;border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 70px rgba(0,0,0,.36)!important}
   .upsell-top{background:linear-gradient(135deg,#111 0%,#2b1708 45%,var(--orange) 100%)!important;padding:12px 42px 12px 14px!important;font-size:13px;line-height:1.35}
@@ -68,8 +69,8 @@ export default async function handler(req, res) {
   .upsell-actions{gap:7px!important;margin-top:8px!important}.upsell-accept{font-size:16px!important;padding:14px 15px!important;background:linear-gradient(135deg,var(--orange),#ff8a1c)!important}
   .upsell-decline{color:#8a8a8a!important;text-decoration:underline;text-underline-offset:3px;font-size:11px!important}
   .mini{font-size:10.5px!important;margin-top:4px!important}
-  @media(max-width:560px){#checkout-form{scroll-margin-top:72px}.upsell-overlay{padding-top:6px!important}.upsell-card{width:calc(100vw - 24px)!important;border-radius:18px!important}.upsell-body img{max-height:135px!important}.upsell-body h3{font-size:21px!important}.upsell-benefits{grid-template-columns:1fr 1fr 1fr!important}.upsell-price strong{font-size:29px!important}.upsell-top{font-size:12px!important}}
-  @media(max-height:720px){.upsell-body img{max-height:110px!important}.upsell-body h3{font-size:19px!important}.upsell-body p{font-size:12px!important;line-height:1.45!important}.upsell-benefits li{padding:6px 4px;font-size:10.5px}.upsell-price strong{font-size:27px!important}.upsell-accept{padding:12px 14px!important;font-size:15px!important}}
+  @media(max-width:560px){#offers-block{scroll-margin-top:135px}.upsell-overlay{padding-top:6px!important}.upsell-card{width:calc(100vw - 24px)!important;border-radius:18px!important}.upsell-body img{max-height:135px!important}.upsell-body h3{font-size:21px!important}.upsell-benefits{grid-template-columns:1fr 1fr 1fr!important}.upsell-price strong{font-size:29px!important}.upsell-top{font-size:12px!important}}
+  @media(max-height:720px){#offers-block{scroll-margin-top:115px}.upsell-body img{max-height:110px!important}.upsell-body h3{font-size:19px!important}.upsell-body p{font-size:12px!important;line-height:1.45!important}.upsell-benefits li{padding:6px 4px;font-size:10.5px}.upsell-price strong{font-size:27px!important}.upsell-accept{padding:12px 14px!important;font-size:15px!important}}
 </style>`;
     html = html.replace('</head>', upsellStyle + '\n</head>');
 
