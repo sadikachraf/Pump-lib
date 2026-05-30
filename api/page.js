@@ -21,41 +21,45 @@ export default async function handler(req, res) {
     html = html
       .replace('const UPSELL_PRICE = 254;', 'const UPSELL_PRICE = 249;')
       .replace(/254 د\.ل/g, '249 د.ل')
+      .replace(/254 دينار/g, '249 دينار')
       .replace(/توفر 91 دينار/g, 'توفر 96 دينار')
+      .replace(/توفر 91 د\.ل/g, 'توفر 96 د.ل')
       .replace(/مضخة ثانية 254 د\.ل/g, 'مضخة ثانية 249 د.ل')
-      .replace('🎁 عرض خاص يظهر مرة واحدة فقط بعد الطلب', '🎁 عرض خاص قبل تجهيز طلبك — يظهر مرة واحدة فقط')
-      .replace('أضف مضخة ثانية بـ 249 دينار فقط', 'أضف مضخة ثانية بـ 249 دينار فقط')
-      .replace('بما أنك طلبت الآن، تقدر تضيف مضخة ثانية لنفس الطلب ونفس التوصيل بسعر أقل من سعر القطعة العادي.', 'خلي وحدة في السيارة ووحدة في الحوش، عند المولد أو في الورشة. بدل ما تنقل نفس المضخة كل مرة، خلي كل مكان عنده وحدة جاهزة.')
-      .replace('بدل 345 د.ل — توفر 96 دينار', 'بدل 345 د.ل لو طلبتها لاحقاً — وفر 96 د.ل الآن')
-      .replace('نعم، أضف المضخة الثانية بـ 249 د.ل', 'نعم، أضف الثانية ووفّر 96 د.ل')
-      .replace('لا شكراً، أرسل طلبي الأصلي فقط', 'لا، أريد قطعة واحدة فقط')
-      .replace('إذا سكرت الصفحة، سيتم تسجيل طلبك الأصلي فقط.', 'نفس الطلب، نفس التوصيل، بدون أي اتصال إضافي.');
+      .replace('🎁 عرض خاص يظهر مرة واحدة فقط بعد الطلب', '🎁 عرض خاص قبل تجهيز طلبك')
+      .replace('بما أنك طلبت الآن، تقدر تضيف مضخة ثانية لنفس الطلب ونفس التوصيل بسعر أقل من سعر القطعة العادي.', 'خلي وحدة في السيارة ووحدة عند المولد أو في الحوش. بدل ما تنقل نفس المضخة كل مرة.')
+      .replace('بدل 345 د.ل — توفر 96 دينار', 'بدل 345 د.ل — وفر 96 د.ل الآن')
+      .replace('نعم، أضف المضخة الثانية بـ 249 د.ل', 'أضف الثانية بـ 249 د.ل')
+      .replace('لا شكراً، أرسل طلبي الأصلي فقط', 'لا، قطعة واحدة فقط')
+      .replace('إذا سكرت الصفحة، سيتم تسجيل طلبك الأصلي فقط.', 'نفس الطلب ونفس التوصيل.');
 
     const oldUpsellImage = '<img src="images/8.webp" alt="عرض مضخة ثانية"><h3>أضف مضخة ثانية بـ 249 دينار فقط</h3>';
-    const newUpsellImage = '<img src="images/8.webp" alt="عرض مضخة ثانية"><div class="upsell-chip">🔥 ترقية الطلب الأكثر اختياراً</div><h3>لا تخلي المضخة في مكان واحد فقط</h3><div class="upsell-sub">أضف الثانية بـ <b>249 د.ل فقط</b></div>';
+    const newUpsellImage = '<img src="images/8.webp" alt="عرض مضخة ثانية"><div class="upsell-chip">🔥 عرض يظهر مرة واحدة</div><h3>أضف مضخة ثانية بـ 249 د.ل فقط</h3>';
     html = html.replace(oldUpsellImage, newUpsellImage);
 
-    const oldUpsellActions = '<div class="upsell-actions"><button class="upsell-accept" onclick="acceptUpsell()">نعم، أضف الثانية ووفّر 96 د.ل</button><button class="upsell-decline" onclick="declineUpsell()">لا، أريد قطعة واحدة فقط</button></div>';
-    const newUpsellActions = '<ul class="upsell-benefits"><li>وحدة للطوارئ في السيارة</li><li>وحدة للمولد أو البيت</li><li>مناسبة للورشة أو المزرعة</li><li>نفس التوصيل ونفس الطلب</li></ul><div class="upsell-actions"><button class="upsell-accept" onclick="acceptUpsell()">نعم، أضف الثانية ووفّر 96 د.ل</button><button class="upsell-decline" onclick="declineUpsell()">لا، أريد قطعة واحدة فقط</button></div>';
+    const oldUpsellActions = '<div class="upsell-actions"><button class="upsell-accept" onclick="acceptUpsell()">أضف الثانية بـ 249 د.ل</button><button class="upsell-decline" onclick="declineUpsell()">لا، قطعة واحدة فقط</button></div>';
+    const newUpsellActions = '<ul class="upsell-benefits"><li>للسيارة</li><li>للمولد أو البيت</li><li>نفس التوصيل</li></ul><div class="upsell-actions"><button class="upsell-accept" onclick="acceptUpsell()">أضف الثانية بـ 249 د.ل</button><button class="upsell-decline" onclick="declineUpsell()">لا، قطعة واحدة فقط</button></div>';
     html = html.replace(oldUpsellActions, newUpsellActions);
 
     const upsellStyle = `
 <style>
-  .upsell-card{border:1px solid rgba(255,255,255,.18);box-shadow:0 34px 110px rgba(0,0,0,.42)!important}
-  .upsell-top{background:linear-gradient(135deg,#111 0%,#2b1708 45%,var(--orange) 100%)!important;padding:17px 46px 17px 18px!important;font-size:15px;line-height:1.45}
-  .upsell-body{padding:22px 18px 18px!important;background:linear-gradient(180deg,#fff 0%,#fff8f0 100%)}
-  .upsell-body img{border:1px solid #f3dfca;box-shadow:0 14px 38px rgba(0,0,0,.10)}
-  .upsell-chip{display:inline-flex;align-items:center;justify-content:center;background:#111;color:#fff;border-radius:999px;padding:7px 13px;margin:2px auto 10px;font-size:12px;font-weight:900;box-shadow:0 9px 24px rgba(0,0,0,.16)}
-  .upsell-body h3{font-size:27px!important;line-height:1.2;margin-bottom:6px;color:#111}
-  .upsell-sub{font-size:18px;font-weight:900;color:#7c2d12;margin-bottom:10px}.upsell-sub b{color:var(--orange2);font-size:24px}
-  .upsell-benefits{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0 14px;text-align:right}
-  .upsell-benefits li{background:#fff;border:1px solid #fed7aa;border-radius:13px;padding:9px 10px;font-size:12.5px;font-weight:900;color:#3b2a1d}
-  .upsell-benefits li::before{content:'✓';color:var(--green);font-weight:900;margin-left:6px}
-  .upsell-price{background:#111!important;color:#fff;border-color:#2f2f2f!important;box-shadow:0 16px 38px rgba(0,0,0,.13)}
-  .upsell-price strong{color:#fff!important;font-size:38px!important}.upsell-price span{color:#ffd7b0!important}
-  .upsell-accept{font-size:18px!important;padding:17px 18px!important;background:linear-gradient(135deg,var(--orange),#ff8a1c)!important}
-  .upsell-decline{color:#8a8a8a!important;text-decoration:underline;text-underline-offset:3px}
-  @media(max-width:560px){.upsell-benefits{grid-template-columns:1fr}.upsell-body h3{font-size:23px!important}.upsell-sub b{font-size:21px}}
+  .upsell-overlay{align-items:flex-start!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;padding:10px 12px 22px!important}
+  .upsell-card{max-height:none!important;margin:0 auto 18px!important;border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 70px rgba(0,0,0,.36)!important}
+  .upsell-top{background:linear-gradient(135deg,#111 0%,#2b1708 45%,var(--orange) 100%)!important;padding:12px 42px 12px 14px!important;font-size:13px;line-height:1.35}
+  .upsell-body{padding:12px 14px 14px!important;background:linear-gradient(180deg,#fff 0%,#fff8f0 100%)}
+  .upsell-body img{max-height:155px!important;object-fit:contain!important;border:1px solid #f3dfca;box-shadow:0 10px 24px rgba(0,0,0,.08);margin-bottom:8px!important}
+  .upsell-chip{display:inline-flex;align-items:center;justify-content:center;background:#111;color:#fff;border-radius:999px;padding:5px 10px;margin:0 auto 7px;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.14)}
+  .upsell-body h3{font-size:24px!important;line-height:1.18;margin:0 0 7px!important;color:#111}
+  .upsell-body p{font-size:13px!important;line-height:1.65!important;margin-bottom:8px!important}
+  .upsell-benefits{list-style:none;display:grid!important;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0 10px;text-align:center}
+  .upsell-benefits li{background:#fff;border:1px solid #fed7aa;border-radius:11px;padding:7px 6px;font-size:11.5px;font-weight:900;color:#3b2a1d}
+  .upsell-benefits li::before{content:'✓';color:var(--green);font-weight:900;margin-left:4px}
+  .upsell-price{background:#111!important;color:#fff;border-color:#2f2f2f!important;box-shadow:0 12px 28px rgba(0,0,0,.12);padding:10px!important;margin:8px 0!important;border-radius:15px!important}
+  .upsell-price strong{color:#fff!important;font-size:32px!important}.upsell-price span{color:#ffd7b0!important;font-size:12px!important}
+  .upsell-actions{gap:7px!important;margin-top:8px!important}.upsell-accept{font-size:16px!important;padding:14px 15px!important;background:linear-gradient(135deg,var(--orange),#ff8a1c)!important}
+  .upsell-decline{color:#8a8a8a!important;text-decoration:underline;text-underline-offset:3px;font-size:11px!important}
+  .mini{font-size:10.5px!important;margin-top:4px!important}
+  @media(max-width:560px){.upsell-overlay{padding-top:6px!important}.upsell-card{width:calc(100vw - 24px)!important;border-radius:18px!important}.upsell-body img{max-height:135px!important}.upsell-body h3{font-size:21px!important}.upsell-benefits{grid-template-columns:1fr 1fr 1fr!important}.upsell-price strong{font-size:29px!important}.upsell-top{font-size:12px!important}}
+  @media(max-height:720px){.upsell-body img{max-height:110px!important}.upsell-body h3{font-size:19px!important}.upsell-body p{font-size:12px!important;line-height:1.45!important}.upsell-benefits li{padding:6px 4px;font-size:10.5px}.upsell-price strong{font-size:27px!important}.upsell-accept{padding:12px 14px!important;font-size:15px!important}}
 </style>`;
     html = html.replace('</head>', upsellStyle + '\n</head>');
 
