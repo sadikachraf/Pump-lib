@@ -10,51 +10,11 @@ export default async function handler(req, res) {
 
     let html = await response.text();
 
-    const telegramBridge = `
-<script>
-(function(){
-  var SHEET_URL = '${SHEET_URL}';
+    const originalPostOrder = "function postOrder(payload,useBeacon=false){try{if(useBeacon&&navigator.sendBeacon){const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'});navigator.sendBeacon(SHEET_URL,blob);return}fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)}).catch(()=>{})}catch(e){}}";
 
-  function sendToTelegram(payload, useBeacon){
-    try{
-      var body = JSON.stringify(payload || {});
-      if(useBeacon && navigator.sendBeacon){
-        var blob = new Blob([body], {type:'application/json;charset=UTF-8'});
-        navigator.sendBeacon('/api/telegram-order', blob);
-        return;
-      }
-      fetch('/api/telegram-order', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:body,
-        keepalive:true
-      }).catch(function(){});
-    }catch(e){}
-  }
+    const telegramPostOrder = "function postOrder(payload,useBeacon=false){try{const telegramBody=JSON.stringify(payload||{});if(useBeacon&&navigator.sendBeacon){const telegramBlob=new Blob([telegramBody],{type:'application/json;charset=UTF-8'});navigator.sendBeacon('/api/telegram-order',telegramBlob)}else{fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:telegramBody,keepalive:true}).catch(()=>{})}}catch(e){}try{if(useBeacon&&navigator.sendBeacon){const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'});navigator.sendBeacon(SHEET_URL,blob);return}fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true}).catch(()=>{})}catch(e){}}";
 
-  window.postOrder = function(payload, useBeacon){
-    try{
-      var sheetBody = JSON.stringify(payload || {});
-      if(useBeacon && navigator.sendBeacon){
-        var sheetBlob = new Blob([sheetBody], {type:'text/plain;charset=UTF-8'});
-        navigator.sendBeacon(SHEET_URL, sheetBlob);
-      }else{
-        fetch(SHEET_URL, {
-          method:'POST',
-          mode:'no-cors',
-          headers:{'Content-Type':'text/plain;charset=UTF-8'},
-          body:sheetBody,
-          keepalive:true
-        }).catch(function(){});
-      }
-    }catch(e){}
-
-    sendToTelegram(payload, !!useBeacon);
-  };
-})();
-</script>`;
-
-    html = html.replace('</body>', telegramBridge + '\n</body>');
+    html = html.replace(originalPostOrder, telegramPostOrder);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store, max-age=0');
