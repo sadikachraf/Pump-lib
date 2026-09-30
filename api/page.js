@@ -10,11 +10,7 @@ export default async function handler(req, res) {
 
     let html = await response.text();
 
-    const originalPostOrder = "function postOrder(payload,useBeacon=false){try{if(useBeacon&&navigator.sendBeacon){const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'});navigator.sendBeacon(SHEET_URL,blob);return}fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)}).catch(()=>{})}catch(e){}}";
-
-    const telegramPostOrder = "function postOrder(payload,useBeacon=false){try{const telegramBody=JSON.stringify(payload||{});if(useBeacon&&navigator.sendBeacon){const telegramBlob=new Blob([telegramBody],{type:'application/json;charset=UTF-8'});navigator.sendBeacon('/api/telegram-order',telegramBlob)}else{fetch('/api/telegram-order',{method:'POST',headers:{'Content-Type':'application/json'},body:telegramBody,keepalive:true}).catch(()=>{})}}catch(e){}try{if(useBeacon&&navigator.sendBeacon){const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'});navigator.sendBeacon(SHEET_URL,blob);return}fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true}).catch(()=>{})}catch(e){}}";
-
-    html = html.replace(originalPostOrder, telegramPostOrder);
+    // Keep order submission connected only to Google Sheets.
 
     // Fix sticky/header CTA: scroll directly to the offers block, so package choices are centered on mobile.
     html = html
@@ -34,7 +30,7 @@ export default async function handler(req, res) {
       .replace('<h3>3 قطع</h3><p>اختيار عملي للورشة أو العائلة</p>', '<h3>3 قطع</h3><p>283 د.ل للقطعة — للورشة أو العائلة فقط</p>');
 
     // Upsell improvement only: copy, visual styling, and displayed/charged upsell price.
-    // This does not touch pixels, Google Sheets, Telegram, or order submission wiring.
+    // This does not touch pixels, Google Sheets, or order submission wiring.
     html = html
       .replace('const UPSELL_PRICE = 254;', 'const UPSELL_PRICE = 249;')
       .replace(/254 د\.ل/g, '249 د.ل')
