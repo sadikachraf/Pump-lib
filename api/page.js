@@ -3,7 +3,9 @@ const RAW_INDEX_URL = 'https://raw.githubusercontent.com/sadikachraf/Pump-lib/ma
 
 export default async function handler(req, res) {
   try {
-    const response = await fetch(RAW_INDEX_URL, { cache: 'no-store' });
+    const revision = process.env.VERCEL_GIT_COMMIT_SHA || Date.now().toString();
+    const sourceUrl = `${RAW_INDEX_URL}?revision=${encodeURIComponent(revision)}`;
+    const response = await fetch(sourceUrl, { cache: 'no-store' });
     if (!response.ok) {
       return res.status(502).send('Unable to load landing page');
     }
