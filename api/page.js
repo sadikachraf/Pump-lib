@@ -12,6 +12,20 @@ export default async function handler(req, res) {
 
     let html = await response.text();
 
+    // Ensure the current Meta pixel is present even if GitHub's raw-content CDN
+    // briefly serves an older copy of index.html to the serverless runtime.
+    if (!html.includes('1000479556408931')) {
+      html = html
+        .replace(
+          "    fbq('init','1298885441635850');",
+          "    fbq('init','1298885441635850');\n    fbq('init','1000479556408931');"
+        )
+        .replace(
+          '    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1298885441635850&ev=PageView&noscript=1"/>',
+          '    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1298885441635850&ev=PageView&noscript=1"/>\n    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1000479556408931&ev=PageView&noscript=1"/>'
+        );
+    }
+
     // Keep order submission connected only to Google Sheets.
 
     // Fix sticky/header CTA: scroll directly to the offers block, so package choices are centered on mobile.
