@@ -1,9 +1,11 @@
-const RAW_INDEX_URL = 'https://raw.githubusercontent.com/sadikachraf/Pump-lib/main/index.html';
+const RAW_REPOSITORY_URL = 'https://raw.githubusercontent.com/sadikachraf/Pump-lib';
 
 export default async function handler(req, res) {
   try {
-    const revision = process.env.VERCEL_GIT_COMMIT_SHA || Date.now().toString();
-    const sourceUrl = `${RAW_INDEX_URL}?revision=${encodeURIComponent(revision)}`;
+    // Fetch the exact commit deployed by Vercel. GitHub's raw-content CDN can
+    // otherwise serve an older `main` response even with a query cache-buster.
+    const revision = process.env.VERCEL_GIT_COMMIT_SHA || 'main';
+    const sourceUrl = `${RAW_REPOSITORY_URL}/${encodeURIComponent(revision)}/index.html`;
     const response = await fetch(sourceUrl, { cache: 'no-store' });
     if (!response.ok) {
       return res.status(502).send('Unable to load landing page');

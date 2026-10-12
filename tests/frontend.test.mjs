@@ -3,6 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const pageHandler = fs.readFileSync(new URL('../api/page.js', import.meta.url), 'utf8');
+
+test('runtime page loader fetches the exact deployed Git commit', () => {
+  assert.match(pageHandler, /process\.env\.VERCEL_GIT_COMMIT_SHA \|\| 'main'/);
+  assert.match(pageHandler, /\$\{encodeURIComponent\(revision\)\}\/index\.html/);
+  assert.doesNotMatch(pageHandler, /\/main\/index\.html/);
+});
 
 test('installs one Google Ads tag and preserves all existing Meta pixels', () => {
   assert.equal((html.match(/googletagmanager\.com\/gtag\/js/g) || []).length, 1);
