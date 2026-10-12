@@ -1,0 +1,8 @@
+{
+  "name": "sanad-libya-cod-landing-page",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}

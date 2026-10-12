@@ -1,4 +1,3 @@
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfZDgIcM8TmzY9XgFE349EM4yMcE0U3TB70NpiXP_fF7RMUYxPxLIwKW_4Qg8m4XJc/exec';
 const RAW_INDEX_URL = 'https://raw.githubusercontent.com/sadikachraf/Pump-lib/main/index.html';
 
 export default async function handler(req, res) {
@@ -26,7 +25,8 @@ export default async function handler(req, res) {
         );
     }
 
-    // Keep order submission connected only to Google Sheets.
+    // /api/order keeps submission connected to Google Sheets and only reports
+    // success after the sheet endpoint acknowledges the request.
 
     // Fix sticky/header CTA: scroll directly to the offers block, so package choices are centered on mobile.
     html = html
@@ -34,9 +34,6 @@ export default async function handler(req, res) {
       .replace(/href="#order"/g, 'href="#offers-block"')
       .replace(/href="#checkout-form"/g, 'href="#offers-block"')
       .replace('<div class="label">اختار العرض:</div><div class="offers">', '<div class="label" id="offers-block">اختار العرض:</div><div class="offers">');
-
-    // Keep the SKU fixed even when an upsell is accepted.
-    html = html.replace("pendingOrder.sku+='+UPSELL-1';", "pendingOrder.sku='AS41600';");
 
     // Make offer economics clearer without changing the design.
     // Since multi-quantity delivery is weaker, copy keeps 1 piece as the safest choice and frames 2/3 pieces for real multi-location need only.

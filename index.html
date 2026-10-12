@@ -6,6 +6,46 @@
   <meta name="description" content="مضخة نقل السوائل العملية في ليبيا — انقل البنزين، الماء، الديزل والزيوت الخفيفة بدون رفع الجالون وبدون فوضى. الدفع عند الاستلام." />
   <title>مضخة نقل السوائل | الدفع عند الاستلام داخل ليبيا</title>
 
+  <!-- Google tag (Google Ads: AW-17684707346) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17684707346"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    (function(){
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500,
+        region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','CH','GB']
+      });
+      var savedConsent = null;
+      try { savedConsent = localStorage.getItem('sanad_ad_consent'); } catch (e) {}
+      if (savedConsent === 'granted' || savedConsent === 'denied') {
+        var consentValue = savedConsent === 'granted' ? 'granted' : 'denied';
+        gtag('consent', 'update', {
+          ad_storage: consentValue,
+          analytics_storage: consentValue,
+          ad_user_data: consentValue,
+          ad_personalization: consentValue
+        });
+      }
+    })();
+    gtag('js', new Date());
+    gtag('config', 'AW-17684707346');
+    window.updateSanadAdConsent = function(granted) {
+      var consentValue = granted ? 'granted' : 'denied';
+      try { localStorage.setItem('sanad_ad_consent', consentValue); } catch (e) {}
+      gtag('consent', 'update', {
+        ad_storage: consentValue,
+        analytics_storage: consentValue,
+        ad_user_data: consentValue,
+        ad_personalization: consentValue
+      });
+    };
+  </script>
+
   <!-- META PIXELS: 778731385018899 + 1298885441635850 + 1000479556408931 -->
   <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -89,27 +129,34 @@
   <a href="#order-form" class="sticky" onclick="fireInitiateCheckout()">اطلب الآن — الدفع عند الاستلام</a>
 
 <script>
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfZDgIcM8TmzY9XgFE349EM4yMcE0U3TB70NpiXP_fF7RMUYxPxLIwKW_4Qg8m4XJc/exec';
+  const ORDER_URL = '/api/order';
+  const GOOGLE_ADS_SEND_TO = 'AW-17684707346/zU8ACJ-ZoZodEJLw3PBB';
   const UPSELL_PRICE = 254;
   const PKGS={
     1:{sku:'AS41600',name:'مضخة نقل السوائل',offer:'قطعة واحدة',price:345,old:420,save:75,quantity:1,unit:'345'},
     2:{sku:'AS41600',name:'مضختين نقل السوائل',offer:'عرض قطعتين',price:599,old:690,save:91,quantity:2,unit:'299.5'},
     3:{sku:'AS41600',name:'3 مضخات نقل السوائل',offer:'عرض 3 قطع',price:849,old:1035,save:186,quantity:3,unit:'283'}
   };
-  let currentPkg=1,pendingOrder=null,pendingPrefix=null,orderSent=false;
+  const ATTRIBUTION_KEYS=['gclid','gbraid','wbraid','fbclid','ScCid','scclid','utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','placement','utm_placement','network'];
+  let currentPkg=1,pendingOrder=null,pendingPrefix=null,orderSent=false,orderSubmitting=false;
+  function captureAttribution(){let saved={};try{saved=JSON.parse(localStorage.getItem('sanad_attribution')||'{}')||{}}catch(e){}const params=new URLSearchParams(window.location.search);let changed=false;ATTRIBUTION_KEYS.forEach(key=>{const value=params.get(key);if(value){if(!saved[key])saved[key]=value;saved['last_'+key]=value;changed=true}});if(!saved.landing_page){saved.landing_page=window.location.href;changed=true}if(changed){saved.captured_at=new Date().toISOString();try{localStorage.setItem('sanad_attribution',JSON.stringify(saved))}catch(e){}}return saved}
+  const orderAttribution=captureAttribution();
+  function createIdempotencyKey(){try{const existing=sessionStorage.getItem('sanad_order_idempotency_key');if(existing)return existing}catch(e){}let key;if(window.crypto&&typeof window.crypto.randomUUID==='function')key=window.crypto.randomUUID();else{const bytes=new Uint8Array(16);window.crypto.getRandomValues(bytes);key=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('')}try{sessionStorage.setItem('sanad_order_idempotency_key',key)}catch(e){}return key}
   function switchImg(thumb,src){const img=document.getElementById('main-img');img.style.opacity='0';setTimeout(()=>{img.src=src;img.style.opacity='1'},120);document.querySelectorAll('.thumb').forEach(x=>x.classList.remove('on'));thumb.classList.add('on')}
   function setPkg(n){currentPkg=n;document.querySelectorAll('.offers .offer').forEach((el,i)=>{el.classList.toggle('on',i%3===n-1)});const p=PKGS[n];document.getElementById('display-price').textContent=p.price;document.getElementById('display-old').textContent='بدل '+p.old+' دينار';document.getElementById('display-save').textContent='وفر '+p.save+' د.ل';document.getElementById('display-per').textContent=p.offer+' — سعر القطعة تقريباً '+p.unit+' د.ل'}
   function pixelTrack(eventName,data){if(typeof fbq!=='undefined') fbq('track',eventName,data)}
   function fireInitiateCheckout(){const p=PKGS[currentPkg];pixelTrack('InitiateCheckout',{value:p.price,currency:'LYD',content_ids:[p.sku],content_type:'product',num_items:p.quantity})}
   function fireLead(p){pixelTrack('Lead',{value:p.price,currency:'LYD',content_ids:[p.sku],content_type:'product',num_items:p.quantity})}
   function firePurchase(p,ref){pixelTrack('Purchase',{value:p.price,currency:'LYD',content_ids:[p.sku],content_type:'product',num_items:p.quantity,order_id:ref})}
-  function buildOrder(prefix){const p=PKGS[currentPkg],now=new Date();const ref='PUMP-LY-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+String(now.getTime()).slice(-5);const name=document.getElementById(prefix+'-name').value.trim();const phone=document.getElementById(prefix+'-phone').value.trim();const city=document.getElementById(prefix+'-city').value.trim();const area=document.getElementById(prefix+'-address').value.trim();const address=city+' - '+area;return {order_date:now.toISOString(), orderDate:now.toISOString(), date:now.toISOString(),order_id:ref, orderId:ref,country:'Libya', name:name, customer_name:name,phone:phone, customer_phone:phone,city:city, address:address, customer_address:address,url:window.location.href, sku:p.sku,product:'مضخة نقل السوائل - '+p.offer,quantity:p.quantity,total_price:p.price, totalPrice:p.price, price:p.price,currency:'LYD',notes:'مدينة: '+city+' | منطقة: '+area+' | عرض: '+p.offer+' | Upsell: لا'};}
-  function postOrder(payload,useBeacon=false){try{if(useBeacon&&navigator.sendBeacon){const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'});navigator.sendBeacon(SHEET_URL,blob);return}fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)}).catch(()=>{})}catch(e){}}
+  function fireGoogleAdsConversion(orderTotal,orderId){const marker='sanad_google_ads_conversion_'+orderId;try{if(localStorage.getItem(marker))return false}catch(e){}if(typeof gtag!=='function')return false;gtag('event','conversion',{send_to:GOOGLE_ADS_SEND_TO,value:orderTotal,currency:'LYD',transaction_id:orderId});try{localStorage.setItem(marker,'1')}catch(e){}return true}
+  function buildOrder(prefix){const p=PKGS[currentPkg];const name=document.getElementById(prefix+'-name').value.trim();const phone=document.getElementById(prefix+'-phone').value.trim();const city=document.getElementById(prefix+'-city').value.trim();const area=document.getElementById(prefix+'-address').value.trim();return {idempotency_key:createIdempotencyKey(),package_id:currentPkg,upsell:false,upsell_price:UPSELL_PRICE,country:'Libya',name:name,phone:phone,city:city,area:area,url:window.location.href,attribution:orderAttribution};}
+  async function postOrder(payload){const response=await fetch(ORDER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});let result=null;try{result=await response.json()}catch(e){}if(!response.ok||!result||result.ok!==true||!result.orderId||!Number.isFinite(result.orderTotal)){throw new Error(result&&result.error?result.error:'ORDER_SUBMISSION_FAILED')}return result}
+  function setOrderSubmitting(isSubmitting){orderSubmitting=isSubmitting;document.querySelectorAll('.upsell-accept,.upsell-decline').forEach(button=>{button.disabled=isSubmitting})}
   function showSuccess(prefix,ref){document.getElementById(prefix==='p'?'p-body':'f-body').style.display='none';const s=document.getElementById(prefix+'-success');s.style.display='block';document.getElementById(prefix+'-ref').textContent='رقم الطلب: '+ref;setTimeout(()=>{const r=s.getBoundingClientRect();window.scrollTo({top:Math.max(0,window.pageYOffset+r.top-120),behavior:'smooth'})},80)}
-  function submitOrder(prefix){const p=PKGS[currentPkg];let ok=true;['name','phone','city','address'].forEach(k=>{const el=document.getElementById(prefix+'-'+k);if(!el||!el.value.trim()){if(el)el.classList.add('err');ok=false}else el.classList.remove('err')});if(!ok){alert('رجاءً املأ كل الخانات المطلوبة *');return}const phoneEl=document.getElementById(prefix+'-phone');const raw=phoneEl.value.trim().replace(/\s/g,'');const norm=raw.startsWith('+218')?'0'+raw.slice(4):raw.startsWith('00218')?'0'+raw.slice(5):raw;if(!/^09\d{8}$/.test(norm)){phoneEl.classList.add('err');alert('رقم الهاتف غير صحيح\nيجب أن يبدأ بـ 09 ويتكون من 10 أرقام\nمثال: 0912345678');return}fireInitiateCheckout();fireLead(p);pendingOrder=buildOrder(prefix);pendingPrefix=prefix;orderSent=false;try{localStorage.setItem('pump_pending_order',JSON.stringify(pendingOrder))}catch(e){}document.getElementById('upsellOverlay').style.display='flex'}
-  function acceptUpsell(){if(!pendingOrder)return;pendingOrder.quantity+=1;pendingOrder.total_price+=UPSELL_PRICE;pendingOrder.totalPrice=pendingOrder.total_price;pendingOrder.price=pendingOrder.total_price;pendingOrder.sku+='+UPSELL-1';pendingOrder.product+=' + مضخة ثانية بسعر خاص';pendingOrder.notes=pendingOrder.notes.replace('Upsell: لا','Upsell: نعم | مضخة ثانية 254 د.ل');postOrder(pendingOrder,false);orderSent=true;try{localStorage.removeItem('pump_pending_order')}catch(e){}document.getElementById('upsellOverlay').style.display='none';firePurchase({price:pendingOrder.total_price,sku:pendingOrder.sku,quantity:pendingOrder.quantity},pendingOrder.order_id);showSuccess(pendingPrefix,pendingOrder.order_id)}
-  function declineUpsell(){if(!pendingOrder)return;postOrder(pendingOrder,false);orderSent=true;try{localStorage.removeItem('pump_pending_order')}catch(e){}document.getElementById('upsellOverlay').style.display='none';firePurchase({price:pendingOrder.total_price,sku:pendingOrder.sku,quantity:pendingOrder.quantity},pendingOrder.order_id);showSuccess(pendingPrefix,pendingOrder.order_id)}
-  window.addEventListener('beforeunload',function(){if(pendingOrder&&!orderSent)postOrder(pendingOrder,true)});
+  function submitOrder(prefix){if(orderSubmitting||pendingOrder)return;const p=PKGS[currentPkg];let ok=true;['name','phone','city','address'].forEach(k=>{const el=document.getElementById(prefix+'-'+k);if(!el||!el.value.trim()){if(el)el.classList.add('err');ok=false}else el.classList.remove('err')});if(!ok){alert('رجاءً املأ كل الخانات المطلوبة *');return}const phoneEl=document.getElementById(prefix+'-phone');const raw=phoneEl.value.trim().replace(/\s/g,'');const norm=raw.startsWith('+218')?'0'+raw.slice(4):raw.startsWith('00218')?'0'+raw.slice(5):raw;if(!/^09\d{8}$/.test(norm)){phoneEl.classList.add('err');alert('رقم الهاتف غير صحيح\nيجب أن يبدأ بـ 09 ويتكون من 10 أرقام\nمثال: 0912345678');return}fireInitiateCheckout();fireLead(p);pendingOrder=buildOrder(prefix);pendingPrefix=prefix;orderSent=false;document.getElementById('upsellOverlay').style.display='flex'}
+  async function finalizeOrder(includeUpsell){if(!pendingOrder||orderSubmitting||orderSent)return;setOrderSubmitting(true);const payload=Object.assign({},pendingOrder,{upsell:includeUpsell});try{const result=await postOrder(payload);orderSent=true;try{sessionStorage.removeItem('sanad_order_idempotency_key')}catch(e){}document.getElementById('upsellOverlay').style.display='none';const trackedOrder={price:result.orderTotal,sku:result.sku,quantity:result.quantity};firePurchase(trackedOrder,result.orderId);fireGoogleAdsConversion(result.orderTotal,result.orderId);showSuccess(pendingPrefix,result.orderId);pendingOrder=null}catch(error){alert('تعذر إرسال الطلب حالياً. لم يتم تسجيل الطلب. رجاءً تحقق من الإنترنت وحاول مرة أخرى.')}finally{setOrderSubmitting(false)}}
+  function acceptUpsell(){return finalizeOrder(true)}
+  function declineUpsell(){return finalizeOrder(false)}
   function toggleFaq(el){el.parentElement.classList.toggle('open')}
   (function(){let total=(Math.floor(Math.random()*65)+120)*60;function tick(){const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),s=total%60,p=n=>String(n).padStart(2,'0');const el=document.getElementById('cd');if(el)el.textContent=p(h)+':'+p(m)+':'+p(s);if(total>0){total--;setTimeout(tick,1000)}}tick()})();
   (function(){let s=Math.floor(Math.random()*9)+16;function up(){['stock-a','stock-b'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=s})}up();setInterval(()=>{if(s>6&&Math.random()<.45){s--;up()}},57000)})();
